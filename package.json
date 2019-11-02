@@ -1,0 +1,50 @@
+{
+  "name": "aws-api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway with Authorizer in Terraform",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=lcov node_modules/.bin/mocha --recursive test/",
+    "test-in-pipeline": "SPAWN_WRAP_SHIM_ROOT=. nyc --reporter=lcov node_modules/.bin/mocha --recursive test/",
+    "build": "npm run build-authorizer && npm run build-uber",
+    "build-authorizer": "node_modules/.bin/gulp --gulpfile gulpfile-authorizer.js build",
+    "build-uber": "node_modules/.bin/gulp --gulpfile gulpfile.js build",
+    "sonar-scanner": "node_modules/.bin/sonar-scanner"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rueggerc/aws-api-gateway.git"
+  },
+  "keywords": [
+    "lambda",
+    "sensor"
+  ],
+  "author": "Chris Ruegger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rueggerc/aws-api-gateway/issues"
+  },
+  "homepage": "https://github.com/rueggerc/aws-api-gateway#readme",
+  "dependencies": {
+    "aws-sdk": "^2.543.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "del": "^2.2.2",
+    "dotenv": "^7.0.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.3",
+    "gulp-rename": "^1.3.0",
+    "gulp-tap": "^0.1.3",
+    "gulp-zip": "^3.2.0",
+    "jsdoc": "^3.5.5",
+    "minimist": "^1.2.0",
+    "mocha": "^6.1.4",
+    "mocha-sonarqube-reporter": "^1.0.1",
+    "nyc": "^14.1.1",
+    "replace-in-file": "^4.1.3",
+    "run-sequence": "^1.2.2",
+    "sinon": "^7.3.2",
+    "sonar-scanner": "^3.1.0"
+  }
+}
