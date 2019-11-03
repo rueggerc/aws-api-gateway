@@ -52,6 +52,7 @@ module "api_gateway" {
     accountId             = "${data.aws_caller_identity.current_account.account_id}"
     invoke_role           = "${data.terraform_remote_state.iam_roles.outputs.rueggerllc_api_gateway_lambda_invoke_role_arn}"
     authorizer_lambda_arn = "${module.lambda_authorizer.arn}"
+    authorizer_name       = "${var.authorizer_name}"
     region                = "${var.region}"
     stage_name            = "${var.env}"
 }

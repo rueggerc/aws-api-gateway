@@ -28,6 +28,10 @@ variable api_gateway_name {
   description = "API Gateway Name"
 }
 
+variable authorizer_name {
+  description = "API Gateway Authorizer Name"
+}
+
 #############################
 # Authorizer
 #############################

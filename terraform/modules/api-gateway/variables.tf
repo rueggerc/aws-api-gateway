@@ -15,7 +15,6 @@ variable name {
 
 variable authorizer_name {
   description = "API Gateway Authorizer Name"
-  default = "Sensor API Authorizer"
 }
 
 variable authorizer_lambda_arn {
