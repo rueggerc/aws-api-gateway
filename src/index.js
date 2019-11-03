@@ -9,6 +9,12 @@ module.exports.handler = async function (event,context,callback) {
         // Get the Authorization Token and Endpoint
         let token = event.authorizationToken;
         let resource = event.methodArn;
+
+        // Decode Token
+        let splitArray = token.split("Basic ");
+        let decodedString = Buffer.from(splitArray[1],'base64').toString();
+        console.log("Decoded Authorization Token=" + decodedString);
+
   
         let response = {};
         response.principalId = "sensor-api-user";

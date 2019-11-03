@@ -25,7 +25,7 @@ describe("Test API Gateway Authorizer", function() {
     it("Successful Authorization", function() {
         let event = {
             "type": "TOKEN",
-            "authorizationToken": "Basic XYZ",
+            "authorizationToken": "Basic Y2hyaXM6ZGFrb3Rh",
             "methodArn": "arn:aws:execute-api:us-east-1:123456:w63xjssnw/dev/GET/sensor-data"
         }
         return new Promise((resolve,reject) => {
