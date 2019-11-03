@@ -74,6 +74,11 @@ pipeline {
         }
  
         stage ('Deploy Application') {
+            when { 
+                not { 
+                  branch 'master'
+                }
+            }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     script {
