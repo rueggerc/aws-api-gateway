@@ -14,7 +14,7 @@ resource "aws_api_gateway_authorizer" "authorizer" {
     name                   = "${var.authorizer_name}"
     rest_api_id            = "${aws_api_gateway_rest_api.api.id}"
     authorizer_uri         = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${var.authorizer_lambda_arn}/invocations"
-    // authorizer_credentials = "${var.invoke_role}"
+    authorizer_credentials = "${var.invoke_role}"
 }
 
 
