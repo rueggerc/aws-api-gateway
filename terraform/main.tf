@@ -72,6 +72,7 @@ module "api_gateway" {
 module "api_gateway_lambda_integration" {
     source                    = "./modules/api-gateway-lambda-integration"
     region                    = "${var.region}"
+    env                       = "${var.env}"
     rest_api_id               = "${module.api_gateway.api_id}"
     rest_api_root_resource_id = "${module.api_gateway.root_resource_id}"
     accountId                 = "${data.aws_caller_identity.current_account.account_id}"
@@ -85,10 +86,13 @@ module "api_gateway_lambda_integration" {
 ###################################################
 # API Gateway Deployment
 ###################################################
-resource "aws_api_gateway_deployment" "deployment" {
-    rest_api_id         = "${module.api_gateway.api_id}"
-    stage_name          = "${var.env}"
+# resource "aws_api_gateway_deployment" "deployment" {
+#     rest_api_id         = "${module.api_gateway.api_id}"
+#     stage_name          = "${var.env}"
 
-    // Force Stage to be Deployed
-    stage_description   = "Stage Deployed at Time: ${timestamp()}"
-}
+#     // Force Stage to be Deployed
+#     stage_description   = "Stage Deployed at Time: ${timestamp()}"
+#     # depends_on = [
+#     #   "${module.api_gateway_lambda_integration}"  
+#     # ]
+# }

@@ -7,6 +7,10 @@ variable region {
   description = "AWS Region"
 }
 
+variable env {
+  description = "Environment we are deplying to"
+}
+
 variable rest_api_id {
   description = "API Gateway REST API ID"
 }
