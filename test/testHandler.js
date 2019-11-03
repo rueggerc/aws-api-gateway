@@ -53,14 +53,6 @@ describe("Test API Gateway Authorizer", function() {
         console.log("authToken=" + authToken);
     });
 
-    // Basic TkF0TzAwMD3%RTo1NzA4MDEwNDM=
-
-    it("Decode Token1", function() {
-        let token = "Basic TkFOTzAwMDE5RTo1NzA4MDEwNDM=";
-        let splitArray = token.split("Basic ");
-        let decodedString = Buffer.from(splitArray[1],'base64').toString();
-        console.log("Decoded String=" + decodedString);
-    });
 
     it("Decode Token2", function() {
         let token = "Basic Y2hyaXM6ZGFrb3Rh";
