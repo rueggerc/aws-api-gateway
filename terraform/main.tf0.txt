@@ -2,9 +2,7 @@ provider "aws" {
   region = "${var.region}"
 }
 
-##################################
 # Backend
-##################################
 terraform {
     backend "s3" {
         bucket = "rueggerllc-terraform-state"
@@ -15,9 +13,7 @@ terraform {
     }
 }
 
-##################################
 # Remote State
-##################################
 data "terraform_remote_state" "iam_roles" {
     backend = "s3"
     config = {
@@ -27,9 +23,6 @@ data "terraform_remote_state" "iam_roles" {
     }
 }
 
-##################################
-# Remote State
-##################################
 data "terraform_remote_state" "aws_lambda_sensor_service" {
     backend = "s3"
     config = {
@@ -39,9 +32,7 @@ data "terraform_remote_state" "aws_lambda_sensor_service" {
     }
 }
 
-##################################
 # AWS Account
-##################################
 data "aws_caller_identity" "current_account" {
 }
 
@@ -87,8 +78,6 @@ resource "aws_api_gateway_resource" "resource" {
     parent_id   = "${aws_api_gateway_rest_api.api.root_resource_id}"
     path_part   = "get-sensor-data"
 }
-
-
 
 ###########################################
 # Method:  /get-sensor-data  GET

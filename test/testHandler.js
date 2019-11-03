@@ -54,6 +54,16 @@ describe("Test API Gateway Authorizer", function() {
     });
 
 
+    it("Generate Token2", function() {
+        let user = "admin";
+        let password = "admin123";
+        let authString = `${user}:${password}`;
+        console.log("authString=" + authString);
+        let authToken = `Basic ${Buffer.from(authString).toString('base64')}`;
+        console.log("authToken=" + authToken);
+    });
+
+
     it("Decode Token2", function() {
         let token = "Basic Y2hyaXM6ZGFrb3Rh";
         let splitArray = token.split("Basic ");
