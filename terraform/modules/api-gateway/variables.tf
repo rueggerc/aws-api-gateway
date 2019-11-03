@@ -1,4 +1,7 @@
 
+##########################################
+# API Gateway Module Input Variables
+##########################################
 
 variable region {
   description = "AWS Region"
@@ -21,10 +24,3 @@ variable authorizer_lambda_arn {
   description = "API Gateway Authorizer ARN"
 }
 
-variable accountId {
-  description = "AWS Account ID"
-}
-
-variable stage_name {
-    description = "API Gateway Stage Name"
-}

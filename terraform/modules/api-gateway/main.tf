@@ -1,4 +1,6 @@
-# Sensor API Gateway Module
+#######################################
+# API Gateway Module
+#######################################
 
 
 
@@ -15,10 +17,14 @@ resource "aws_api_gateway_authorizer" "authorizer" {
     authorizer_credentials = "${var.invoke_role}"
 }
 
-resource "aws_api_gateway_deployment" "deployment" {
-    rest_api_id         = "${aws_api_gateway_rest_api.api.id}"
-    stage_name          = "${var.stage_name}"
 
-    // Force Stage to be Deployed
-    stage_description   = "Stage Deployed at Time: ${timestamp()}"
-}
+###################################################
+# Deployment
+###################################################
+# resource "aws_api_gateway_deployment" "deployment" {
+#     rest_api_id         = "${aws_api_gateway_rest_api.api.id}"
+#     stage_name          = "${var.stage_name}"
+
+#     // Force Stage to be Deployed
+#     stage_description   = "Stage Deployed at Time: ${timestamp()}"
+# }
