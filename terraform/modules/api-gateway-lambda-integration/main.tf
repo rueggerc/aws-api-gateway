@@ -29,7 +29,7 @@ resource "aws_api_gateway_integration" "request_method_integration" {
     # AWS Lambdas can only be invoked with POST method
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
-    uri                     = "arn:aws:apigateawy:${var.region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
+    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${var.lambda_arn}/invocations"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
