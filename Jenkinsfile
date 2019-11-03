@@ -35,6 +35,11 @@ pipeline {
             }
         }
         stage ('Run Tests') {
+            when { 
+                not { 
+                  branch 'master'
+                }
+            }
             steps {
                 echo "Run Unit Tests BEGIN"
                 sh 'npm run test-in-pipeline'
@@ -67,18 +72,13 @@ pipeline {
                 }
             }
         }
-        // stage ('Deploy Application Stage') {
-        //     steps {
-        //         echo 'Running deploy stage...'
-        //         echo 'AWS STUFF'
-        //         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        //             echo '================= Here we go List S3 Buckets BEGIN ============'
-        //             AWS("--region=us-east-1 s3 ls")
-        //             echo '================= Here we go List S3 Buckets END ============'
-        //         }
-        //     }
-        // }
+ 
         stage ('Deploy Application') {
+            when { 
+                not { 
+                  branch 'master'
+                }
+            }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     script {
@@ -96,7 +96,7 @@ pipeline {
                         sh 'terraform --version'
                         sh 'terraform init'
                         sh 'terraform plan -var-file="vars/dev-us-east-1.tfvars" -out=plan'
-                        // sh 'terraform apply plan'
+                        sh 'terraform apply plan'
                     }
                 }
  

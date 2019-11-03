@@ -25,7 +25,7 @@ describe("Test API Gateway Authorizer", function() {
     it("Successful Authorization", function() {
         let event = {
             "type": "TOKEN",
-            "authorizationToken": "Basic XYZ",
+            "authorizationToken": "Basic Y2hyaXM6ZGFrb3Rh",
             "methodArn": "arn:aws:execute-api:us-east-1:123456:w63xjssnw/dev/GET/sensor-data"
         }
         return new Promise((resolve,reject) => {
@@ -42,6 +42,23 @@ describe("Test API Gateway Authorizer", function() {
                 reject(error);
             });
         });
+    });
+
+    it("Generate Token", function() {
+        let user = "chris";
+        let password = "dakota";
+        let authString = `${user}:${password}`;
+        console.log("authString=" + authString);
+        let authToken = `Basic ${Buffer.from(authString).toString('base64')}`;
+        console.log("authToken=" + authToken);
+    });
+
+
+    it("Decode Token2", function() {
+        let token = "Basic Y2hyaXM6ZGFrb3Rh";
+        let splitArray = token.split("Basic ");
+        let decodedString = Buffer.from(splitArray[1],'base64').toString();
+        console.log("Decoded String=" + decodedString);
     });
 
 });

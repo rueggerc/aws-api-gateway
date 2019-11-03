@@ -8,6 +8,7 @@ env = "dev"
 
 # API Gateway
 api_gateway_name                = "Sensor API"
+authorizer_name                 = "Sensor-API-Authorizer"
 
 # Authorizer
 lambda_authorizer_function_name = "API-GATEWAY-AUTHORIZER"
