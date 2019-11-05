@@ -81,8 +81,9 @@ resource "aws_api_gateway_authorizer" "authorizer" {
 
 ###########################################
 # Resource: /get-sensor-data
+# 1 reference
 ###########################################
-resource "aws_api_gateway_resource" "resource_root" {
+resource "aws_api_gateway_resource" "get_sensor_data_resource_root" {
     rest_api_id = "${aws_api_gateway_rest_api.api.id}"
     parent_id   = "${aws_api_gateway_rest_api.api.root_resource_id}"
     path_part   = "get-sensor-data"
@@ -90,41 +91,44 @@ resource "aws_api_gateway_resource" "resource_root" {
 
 ###########################################
 # Resource: /get-sensor-data/{sensor-type}
+# 1 reference
 ###########################################
-resource "aws_api_gateway_resource" "resource_sensor_type" {
+resource "aws_api_gateway_resource" "get_sensor_data_resource_sensor_type" {
     rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-    parent_id   = "${aws_api_gateway_resource.resource_root.id}"
+    parent_id   = "${aws_api_gateway_resource.get_sensor_data_resource_root.id}"
     path_part   = "{sensor-type}"
 }
 
 ###############################################################
 # Resource: /get-sensor-data/{sensor-type}/{sensor-id}
+# 3 references
 ###############################################################
-resource "aws_api_gateway_resource" "resource_sensor_id" {
+resource "aws_api_gateway_resource" "get_sensor_data_resource_sensor_id" {
     rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-    parent_id   = "${aws_api_gateway_resource.resource_sensor_type.id}"
+    parent_id   = "${aws_api_gateway_resource.get_sensor_data_resource_sensor_type.id}"
     path_part   = "{sensor-id}"
 }
 
 
-###########################################
-# Method:  /get-sensor-data  GET
-###########################################
-resource "aws_api_gateway_method" "request_method" {
+##################################################################
+# Method:  /get-sensor-data/{sensor-type}/{sensor-id}  GET Method
+# 2 references
+##################################################################
+resource "aws_api_gateway_method" "get_sensor_data_request_method" {
     rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-    resource_id = "${aws_api_gateway_resource.resource_sensor_id.id}"
+    resource_id = "${aws_api_gateway_resource.get_sensor_data_resource_sensor_id.id}"
     http_method = "GET"
     authorization = "CUSTOM"
     authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
 }
 
-################################################################
-# Integration:  /get-sensor-data  GET   invokes GET-SENSOR-DATA  
-################################################################
-resource "aws_api_gateway_integration" "request_method_integration" {
+#########################################################################################
+# Integration:  /get-sensor-data/{sensor-type}/{sensor-id} GET   invokes GET-SENSOR-DATA  
+#########################################################################################
+resource "aws_api_gateway_integration" "get_sensor_data_request_method_integration" {
     rest_api_id             = "${aws_api_gateway_rest_api.api.id}"
-    resource_id             = "${aws_api_gateway_resource.resource_sensor_id.id}"
-    http_method             = "${aws_api_gateway_method.request_method.http_method}"
+    resource_id             = "${aws_api_gateway_resource.get_sensor_data_resource_sensor_id.id}"
+    http_method             = "${aws_api_gateway_method.get_sensor_data_request_method.http_method}"
 
     # AWS Lambdas can only be invoked with POST method
     integration_http_method = "POST"
@@ -132,17 +136,17 @@ resource "aws_api_gateway_integration" "request_method_integration" {
     uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${data.terraform_remote_state.aws_lambda_sensor_service.outputs.get_sensor_data_arn}/invocations"
 }
 
-################################################################
-# Permission:  /get-sensor-data  GET   invokes GET-SENSOR-DATA  
-################################################################
+#########################################################################################
+# Permission:  /get-sensor-data/{sensor-type}/{sensor-id}  GET   invokes GET-SENSOR-DATA  
+#########################################################################################
 resource "aws_lambda_permission" "allow_api_gateway" {
     statement_id  = "AllowExecutionFromApiGateway"
     action        = "lambda:InvokeFunction"
     function_name = "${data.terraform_remote_state.aws_lambda_sensor_service.outputs.get_sensor_data_function_name}"
     principal     = "apigateway.amazonaws.com"
-    source_arn    = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current_account.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.request_method.http_method}${aws_api_gateway_resource.resource_sensor_id.path}"
+    source_arn    = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current_account.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.get_sensor_data_request_method.http_method}${aws_api_gateway_resource.get_sensor_data_resource_sensor_id.path}"
     depends_on    = [
-        "aws_api_gateway_resource.resource_sensor_id"
+        "aws_api_gateway_resource.get_sensor_data_resource_sensor_id"
     ]
 }
 
@@ -157,6 +161,6 @@ resource "aws_api_gateway_deployment" "deployment" {
     // Force Stage to be Deployed
     stage_description   = "Stage Deployed at Time: ${timestamp()}"
     depends_on = [
-      "aws_api_gateway_integration.request_method_integration"  
+      "aws_api_gateway_integration.get_sensor_data_request_method_integration"  
     ]
 }
