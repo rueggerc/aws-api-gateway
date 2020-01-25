@@ -155,7 +155,7 @@ resource "aws_api_gateway_deployment" "deployment" {
     ]
 
     // Lifecycle
-    lifecycle {
-        create_before_destroy = true
-    }
+    # lifecycle {
+    #     create_before_destroy = true
+    # }
 }
