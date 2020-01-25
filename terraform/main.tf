@@ -84,7 +84,6 @@ resource "aws_api_gateway_authorizer" "authorizer" {
 
 
 ##################################
-# 1 Get Sensor Data 
 # Resource /get-sensor-data
 ##################################
 resource "aws_api_gateway_resource" "resource_get_sensor_data" {
@@ -93,14 +92,34 @@ resource "aws_api_gateway_resource" "resource_get_sensor_data" {
     path_part   = "get-sensor-data"
 }
 
-##################################
+#########################################
+# Resource /get-sensor-data/{sensor-type}
+#########################################
+resource "aws_api_gateway_resource" "resource_get_sensor_data_sensor_type" {
+    rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+    parent_id   = "${aws_api_gateway_resource.resource_get_sensor_data.id}"
+    path_part   = "{sensor-type}"
+}
+
+
+######################################################
+# 1
+# Resource /get-sensor-data/{sensor-type}/{sensor-id}
+######################################################
+resource "aws_api_gateway_resource" "resource_get_sensor_data_sensor_id" {
+    rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+    parent_id   = "${aws_api_gateway_resource.resource_get_sensor_data_sensor_type.id}"
+    path_part   = "{sensor-id}"
+}
+
+###########################################################
 # 2 Get Sensor Data
-# Method: GET /get-sensor-data
-##################################
+# Method: GET /get-sensor-data/{sensor-type}/{sensor-id}
+###########################################################
 # Method
 resource "aws_api_gateway_method" "method_get_sensor_data" {
     rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-    resource_id = "${aws_api_gateway_resource.resource_get_sensor_data.id}"
+    resource_id = "${aws_api_gateway_resource.resource_get_sensor_data_sensor_id.id}"
     http_method = "GET"
     authorization = "CUSTOM"
     authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
@@ -108,12 +127,12 @@ resource "aws_api_gateway_method" "method_get_sensor_data" {
 
 #######################################################################
 # 3 Get Sensor Data 
-# Proxy Integration: GET /get-sensor-data  ==?  invokes GET-SENSOR-DATA
+# Proxy Integration: GET /get-sensor-data/{sensor-type}/{sensor-id}  ==?  invokes GET-SENSOR-DATA
 # Remote State Reference: aws_lambda_sensor_service.outputs.get_sensor_data_arn
 #######################################################################
 resource "aws_api_gateway_integration" "get_sensor_data_method_integration" {
     rest_api_id             = "${aws_api_gateway_rest_api.api.id}"
-    resource_id             = "${aws_api_gateway_resource.resource_get_sensor_data.id}"
+    resource_id             = "${aws_api_gateway_resource.resource_get_sensor_data_sensor_id.id}"
     http_method             = "${aws_api_gateway_method.method_get_sensor_data.http_method}"
 
     # AWS Lambdas can only be invoked with POST method
@@ -124,7 +143,7 @@ resource "aws_api_gateway_integration" "get_sensor_data_method_integration" {
 
 #######################################################################
 # 4 Get Sensor Data 
-# Lambda Permission:  GET /get-sensor-data => invokes GET-SENSOR-DATA
+# Lambda Permission:  GET /get-sensor-data/{sensor-type}/{sensor-id} => invokes GET-SENSOR-DATA
 # Remote State Reference: aws_lambda_sensor_service.outputs.get_sensor_data_name
 #######################################################################
  resource "aws_lambda_permission" "allow_api_gateway_invoke_get_sensor_data" {
@@ -132,7 +151,7 @@ resource "aws_api_gateway_integration" "get_sensor_data_method_integration" {
     action        = "lambda:InvokeFunction"
     function_name = "${data.terraform_remote_state.aws_lambda_sensor_service.outputs.get_sensor_data_arn}"
     principal     = "apigateway.amazonaws.com"
-    source_arn    = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current_account.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method_get_sensor_data.http_method}${aws_api_gateway_resource.resource_get_sensor_data.path}"
+    source_arn    = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current_account.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method_get_sensor_data.http_method}${aws_api_gateway_resource.resource_get_sensor_data_sensor_id.path}"
     depends_on    = [
         "aws_api_gateway_resource.resource_get_sensor_data"
     ]
@@ -155,7 +174,7 @@ resource "aws_api_gateway_deployment" "deployment" {
     ]
 
     // Lifecycle
-    # lifecycle {
-    #     create_before_destroy = true
-    # }
+    lifecycle {
+        create_before_destroy = true
+    }
 }
