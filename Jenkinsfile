@@ -20,6 +20,7 @@ pipeline {
             }
             steps {
                 echo "Building from master Branch"
+                sh 'pwd'
             }
         }
         stage ('Build Feature Branch') {
@@ -74,11 +75,6 @@ pipeline {
         }
  
         stage ('Deploy Application') {
-            when { 
-                not { 
-                  branch 'master'
-                }
-            }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     script {
@@ -87,6 +83,7 @@ pipeline {
                     }
 
                     echo 'Build ZIP File(s) For Deployment'
+                    sh 'npm install --only=production'
                     sh 'npm run build'
                 
                     // Run Terraform
