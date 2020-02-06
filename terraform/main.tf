@@ -70,6 +70,8 @@ module "lambda_authorizer" {
 ##################################
 resource "aws_api_gateway_rest_api" "api" {
     name = "${upper(var.api_gateway_name)}-${upper(var.env)}"
+    description = "Sensors API"
+    binary_media_types = ["application/octet-stream"]
 }
 
 ##################################
